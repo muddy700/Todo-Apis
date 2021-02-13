@@ -13,6 +13,10 @@ class UserIn(Schema):
     password: str 
     email: str 
 
+class LogIn(Schema):
+    username: str
+    pwd: str 
+
 class UserOut(Schema):
     id: int
     username: str
@@ -29,21 +33,27 @@ def get_user(request, user_id: int):
     user = get_object_or_404(User, id=user_id)
     return user
 
-@router.post("/", tags=["Users"])
+@router.post("/create/", tags=["Users"])
 def create_user(request, payload: UserIn):
     user = User.objects.create(**payload.dict())
     return {"id": user.id}
 
-@router.delete("/{user_id}", tags=["Users"])
+@router.delete("/delete/{user_id}", tags=["Users"])
 def delete_user(request, user_id: int):
     user = get_object_or_404(User, id=user_id)
     user.delete()
     return {"success": True}
 
-@router.put("/{user_id}", tags=["Users"])
+@router.put("/update/{user_id}", tags=["Users"])
 def update_user(request, user_id: int, payload: UserIn):
     user = get_object_or_404(User, id=user_id)
     for attr, value in payload.dict().items():
         setattr(user, attr, value)
     user.save()
     return {"success": True}
+
+# Login Endpoint
+@router.get("/authorization/{uname}/{pwd}", response=UserOut, tags=["Users Login"])
+def get_user_verification(request, uname: str, pwd: str ):
+    user = get_object_or_404(User, username=uname, password=pwd)
+    return user

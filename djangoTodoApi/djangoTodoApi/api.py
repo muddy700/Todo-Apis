@@ -1,5 +1,4 @@
 from ninja import NinjaAPI
-
 from todoApi.api import router as todos_router
 from userApi.api import router as users_router
 from userApi.api2 import router as profiles_router
@@ -16,7 +15,8 @@ class GlobalAuth(HttpBearer):
         if token == "code":
             return token
 
-api = NinjaAPI(auth=GlobalAuth(), csrf=True)
+api = NinjaAPI()
+# api = NinjaAPI(auth=GlobalAuth(), csrf=True)
 
 api.add_router("/todos/", todos_router)
 api.add_router("/users/", users_router)
